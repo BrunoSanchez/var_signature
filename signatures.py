@@ -51,7 +51,7 @@ def extract_signature(lc_time, lc_mag, lc_amplitude, lc_period, bins):
     return h
 
 
-cat = np.loadtxt('PLV_LINEAR.dat.txt')
+cat = np.loadtxt('catalogs/PLV_LINEAR.dat.txt')
 
 
 # =============================================================================
@@ -139,4 +139,3 @@ plt.title('Anomal Cepheid')
 
 plt.tight_layout()
 plt.savefig('signature_stacking.png', dpi=600)
-
