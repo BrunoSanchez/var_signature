@@ -103,7 +103,8 @@ def main():
     #~ extractor(df)
 
     features = mp_apply(df, extractor)
-    features.to_pickle("features.pkl")
+    features.to_pickle("features/features.pkl")
+    features.to_csv("features/features.csv", index=False)
 
 
 # =============================================================================
