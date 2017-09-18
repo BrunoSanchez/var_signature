@@ -4,13 +4,23 @@
 # classification and period verification are described in Palaversa et al. (in prep.)
 # This file contains LINEAR light curve data. LINEARobjectID is an internal ID that can 
 # be used to find the corresponding light curve data (see file allDAT.tar.gz and for 
-# plots file allPNG.tar.gz). The entry "LCtype" is the light curve type from visual 
-# classification (the numbers in parenthesis give counts), 1 = RR Lyr ab (2923); 2 = 
-# RR Lyr c (990); 3 = Algol-like with 1 minimum (20); 4 = Algol-like with 2 minima 
-# (357); 5 = contact binary (2385); 6 = delta Scu/SX Phe (112); 7 = long-period 
-# variable, including semi-regular variables (77); 8 = hearbeat candidates (1); 
-# 9 = BL Her (6); 11 = anomalous Cepheids (5); 0 = other (318, including some quasars) 
-# [yes, class 10 is missing]. P is the best-fit period (visually confirmed). When 
+# plots file allPNG.tar.gz). 
+# The entry "LCtype" is the light curve type from visual 
+# classification (the numbers in parenthesis give counts), 
+# 1 = RR Lyr ab (2923); 
+# 2 = RR Lyr c (990); 
+# 3 = Algol-like with 1 minimum (20); 
+# 4 = Algol-like with 2 minima (357); 
+# 5 = contact binary (2385); 
+# 6 = delta Scu/SX Phe (112); 
+# 7 = long-period variable, including semi-regular variables (77); 
+# 8 = hearbeat candidates (1); 
+# 9 = BL Her (6); 
+# 11 = anomalous Cepheids (5); 
+# 0 = other (318, including some quasars) 
+# [yes, class 10 is missing]. 
+#
+# P is the best-fit period (visually confirmed). When 
 # period cannot be reliably determined, it is set to -9.90 (6958 sources, from 7194,
 # have P>0, with minP=0.042d and maxP=1964 d). A is the light curve amplitude, 
 # estimated non-parametrically from the cumulative magnitude distribution as the range 
