@@ -39,11 +39,12 @@ def calc_features(varname):
     fspace = feets.FeatureSpace(data=['time', 'magnitude', 'error'])
                         #    'magnitude2', 'time2', 'error2'])
     colnames = fspace.features_as_array_
+    colnames = np.concatenate([np.array(['OBJID']), colnames])
     features_o = np.zeros(colnames.shape)
     features_c = np.zeros(colnames.shape)
     #for irow in range(len(obj_tab[0:3])):
         #anobj = obj_tab[irow]
-    for anobj in obj_tab:
+    for anobj in obj_tab[0:1]:
         objid = anobj['objid']
         detections = det_tab[det_tab['objid']==objid]
         o_tab = detections[detections['filter']=='o']
@@ -59,25 +60,27 @@ def calc_features(varname):
                 feat, val = fspace.extract(*lc)
             except:
                 import ipdb; ipdb.set_trace()
-
+            val = np.concatenate([np.array([objid]), val])
             features_o = np.vstack([features_o, val])
 
         #=========================================================================
         ctime, cmag, cerror = feets.preprocess.remove_noise(
                       c_tab['mjd'], c_tab['m'], c_tab['dm'])
         #print 'total omag points', len(omag)
-            if len(ctime)>=20:
-                lc = [ctime, cmag, cerror]
-                feat, val = fspace.extract(*lc)
-
-                features_c = np.vstack([features_c, val])
+        if len(ctime)>=20:
+            lc = [ctime, cmag, cerror]
+            feat, val = fspace.extract(*lc)
+            val = np.concatenate([np.array([objid]), val])
+            features_c = np.vstack([features_c, val])
 
 
     features_o = np.delete(features_o, 0, 0)
     features_c = np.delete(features_c, 0, 0)
 
-    np.savetxt(os.path.join(data_path,'features_o_'+varname+'.txt.gz'), features_o)
-    np.savetxt(os.path.join(data_path,'features_c_'+varname+'.txt.gz'), features_c)
+    np.savetxt(os.path.join(data_path,'features_o_'+varname+'.txt.gz'),
+               features_o)
+    np.savetxt(os.path.join(data_path,'features_c_'+varname+'.txt.gz'),
+               features_c)
 
 
 if __name__=='__main__':
