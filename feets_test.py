@@ -44,7 +44,7 @@ def calc_features(varname):
     features_c = np.zeros(colnames.shape)
     #for irow in range(len(obj_tab[0:3])):
         #anobj = obj_tab[irow]
-    for anobj in obj_tab[0:1]:
+    for anobj in obj_tab:
         objid = anobj['objid']
         detections = det_tab[det_tab['objid']==objid]
         o_tab = detections[detections['filter']=='o']
