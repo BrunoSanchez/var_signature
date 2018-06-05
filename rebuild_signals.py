@@ -32,22 +32,53 @@ header = np.concatenate([np.array(['OBJID']), header])
 dmdt_idx = [i for i in range(len(header)) if 'DeltamDeltat' in header[i]]
 sign_idx = [i for i in range(len(header)) if 'Signature' in header[i]]
 
-tab = np.loadtxt('ATLAS_LC/features_c_MPULSE.txt.gz')
 
-stack = np.average(tab, axis=0)
-sign = stack[sign_idx]
-plt.imshow(sign.reshape(18, 12).T, interpolation='none', cmap='Greys',
-           vmax=2)
-plt.title('MPULSE signature')
-plt.savefig('mpulse_signature_c.png')
+def plot_diagrams(varname):
+    tab = np.loadtxt('ATLAS_LC/features_c_'+varname+'.txt.gz')
+
+    stack = np.average(tab, axis=0)
+    sign = stack[sign_idx]
+    plt.imshow(sign.reshape(18, 12).T, interpolation='none', cmap='inferno',
+               vmax=2)
+    plt.title(varname + ' signature')
+    plt.savefig(varname+'_signature_c.png')
+
+    dmdt = stack[dmdt_idx]
+
+    plt.imshow(dmdt.reshape(23, 24).T, interpolation='none', cmap='rainbow')
+    plt.title(varname+' dmdt')
+    plt.savefig(varname+'_dmdt_c.png')
 
 
-dmdt = stack[dmdt_idx]
+    tab = np.loadtxt('ATLAS_LC/features_o_'+varname+'.txt.gz')
 
-plt.imshow(dmdt.reshape(23, 24).T, interpolation='none', cmap='rainbow')
-plt.title('Mira dmdt')
-plt.savefig('mpulse_dmdt_c.png')
-plt.show()
+    stack = np.average(tab, axis=0)
+    sign = stack[sign_idx]
+    plt.imshow(sign.reshape(18, 12).T, interpolation='none', cmap='inferno',
+               vmax=2)
+    plt.title(varname+' signature')
+    plt.savefig(varname+'_signature_o.png')
+
+
+    dmdt = stack[dmdt_idx]
+
+    plt.imshow(dmdt.reshape(23, 24).T, interpolation='none', cmap='rainbow')
+    plt.title(varname+' dmdt')
+    plt.savefig(varname+'_dmdt_o.png')
+
+
+plot_diagrams('MIRA')
+plot_diagrams('LPV')
+plot_diagrams('IRR')
+plot_diagrams('SINE')
+plot_diagrams('MSINE')
+plot_diagrams('NSINE')
+plot_diagrams('CBH')
+plot_diagrams('CBF')
+plot_diagrams('DBH')
+plot_diagrams('DBF')
+plot_diagrams('PULSE')
+plot_diagrams('MPULSE')
 
 
 #~ idxs = []
