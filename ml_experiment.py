@@ -22,9 +22,10 @@
 #
 #
 import numpy as np
+import itertools
 from sklearn import metrics
 from sklearn.model_selection import StratifiedKFold
-
+import matplotlib.pyplot as plt
 
 def experiment(clf, x, y, nfolds=10, printing=False, multiclass=False):
     skf = StratifiedKFold(n_splits=nfolds)
@@ -69,3 +70,84 @@ def experiment(clf, x, y, nfolds=10, printing=False, multiclass=False):
         results['prec_rec_curve'] = prec_rec_curve
 
     return results
+
+
+def plot_confusion_matrix(cm, classes,
+                          normalize=False,
+                          title='Confusion matrix',
+                          cmap=plt.cm.Blues,
+                          printcm=False, 
+                          colorbar=False, 
+                          thresh=None):
+    """
+    This function prints and plots the confusion matrix.
+    Normalization can be applied by setting `normalize=True`.
+    """
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    if colorbar:
+        plt.colorbar()
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation=45)
+    plt.yticks(tick_marks, classes)
+
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        if printcm:
+            print(cm)
+            print("Normalized confusion matrix")
+    else:
+        if printcm:
+            print(cm)
+            print('Confusion matrix, without normalization')
+
+    if thresh is None:
+        thresh = 0.74 #cm.max() / 1.5
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        plt.text(j, i, cm[i, j],
+                 horizontalalignment="center",
+                 color="white" if cm[i, j] > thresh else "black")
+
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+
+
+def importance_perm(X, y, forest=None, cols=None, method=None):
+    
+    X = pd.DataFrame(X, columns=cols)
+    y = pd.DataFrame(y)
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
+    
+    if forest is None:
+        forest = RandomForestClassifier(n_estimators=250, random_state=33, n_jobs=-1)
+    
+    X_train['Random'] = np.random.random(size=len(X_train))
+    X_test['Random'] = np.random.random(size=len(X_test))
+    
+    forest.fit(X_train, y_train)
+    imp = importances(forest, X_test, y_test) # permutation
+    return imp
+    
+    
+def importance_perm_kfold(X, y, forest=None, cols=None, method=None, nfolds=10):
+    skf = StratifiedKFold(n_splits=nfolds)
+    imp = []
+
+    for train, test in skf.split(X, y):      
+        X_train = pd.DataFrame(X[train], columns=cols)
+        X_test = pd.DataFrame(X[test], columns=cols)
+        y_train = pd.DataFrame(y[train])
+        y_test = pd.DataFrame(y[test])
+        
+        if forest is None:
+            forest = RandomForestClassifier(n_estimators=250, random_state=33, n_jobs=-1)
+
+        X_train['Random'] = np.random.random(size=len(X_train))
+        X_test['Random'] = np.random.random(size=len(X_test))
+        
+        forest.fit(X_train, y_train)
+        imp.append(importances(forest, X_test, y_test)) # permutation
+    #imp = pd.concat(imp, axis=1)
+    return imp
