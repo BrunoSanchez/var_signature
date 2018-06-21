@@ -26,7 +26,7 @@ from sklearn import metrics
 from sklearn.model_selection import StratifiedKFold
 
 
-def experiment(clf, x, y, nfolds=10, printing=False):
+def experiment(clf, x, y, nfolds=10, printing=False, multiclass=False):
     skf = StratifiedKFold(n_splits=nfolds)
     probabilities = None # np.array([])
     predictions = np.array([])
@@ -49,19 +49,23 @@ def experiment(clf, x, y, nfolds=10, printing=False):
         predictions = np.hstack([predictions, pr])
         y_testing = np.hstack([y_testing, y_test])
 
+    results = {}
+    results['y_test'] = y_testing
+    results['model'] = clf
+    results['probabilities'] = probabilities
+    results['predictions'] = predictions
+    results['confusion_matrix'] = metrics.confusion_matrix(y_testing, predictions)
+        
     if printing:
         print metrics.classification_report(y_testing, predictions)
-    fpr, tpr, thresholds = metrics.roc_curve(y_testing, 1.-probabilities[:, 0])
-    prec_rec_curve = metrics.precision_recall_curve(y_testing, 1.- probabilities[:, 0])
-    roc_auc = metrics.auc(fpr, tpr)
-    return {'fpr': fpr,
-            'tpr': tpr,
-            'thresh': thresholds,
-            'roc_auc': roc_auc,
-            'prec_rec_curve': prec_rec_curve,
-            'y_test': y_testing,
-            'predictions': predictions,
-            'probabilities': probabilities,
-            'confusion_matrix': metrics.confusion_matrix(y_testing, predictions),
-            'model': clf
-            }
+    if not multiclass:
+        fpr, tpr, thresholds = metrics.roc_curve(y_testing, 1.-probabilities[:, 0])
+        prec_rec_curve = metrics.precision_recall_curve(y_testing, 1.- probabilities[:, 0])
+        roc_auc = metrics.auc(fpr, tpr)
+        results['fpr'] = fpr
+        results['tpr'] = tpr
+        results['thresh'] = thresholds
+        results['roc_auc'] = roc_auc
+        results['prec_rec_curve'] = prec_rec_curve
+
+    return results
