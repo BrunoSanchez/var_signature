@@ -27,6 +27,8 @@ from sklearn import metrics
 from sklearn.model_selection import StratifiedKFold
 import matplotlib.pyplot as plt
 
+from rfpimp import *
+
 def experiment(clf, x, y, nfolds=10, printing=False, multiclass=False):
     skf = StratifiedKFold(n_splits=nfolds)
     probabilities = None # np.array([])
@@ -104,7 +106,7 @@ def plot_confusion_matrix(cm, classes,
     if thresh is None:
         thresh = 0.74 #cm.max() / 1.5
     for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-        plt.text(j, i, cm[i, j],
+        plt.text(j, i, np.round(cm[i, j], 3),
                  horizontalalignment="center",
                  color="white" if cm[i, j] > thresh else "black")
 
